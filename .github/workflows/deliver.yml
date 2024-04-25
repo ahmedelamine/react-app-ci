@@ -1,0 +1,56 @@
+name: React-app CD
+
+# on:
+#   workflow_call:
+#   workflow_dispatch:
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  # Use Docker Hub for Docker registry
+  REGISTRY: docker.io
+  # Your Docker Hub username
+  DOCKER_HUB_USERNAME: aounallah
+  # Your Docker Hub password
+  DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+  # Docker image name
+  IMAGE_NAME: aounallah/react-app
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Install Docker CLI
+      - name: Install Docker CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+          sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+          sudo apt-get update
+          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+      # Build Docker image
+      - name: Build Docker image
+        run: docker build -t ${{ env.IMAGE_NAME }} .
+
+      # Log in to Docker Hub
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_PASSWORD }}" | docker login -u ${{ env.DOCKER_HUB_USERNAME }} --password-stdin
+
+      # Push Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: docker push ${{ env.IMAGE_NAME }}
+
+      # You can add more steps here for deployment to your hosting environment
