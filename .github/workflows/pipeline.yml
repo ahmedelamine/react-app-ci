@@ -19,40 +19,15 @@ env:
   # Docker image name
   IMAGE_NAME: aounallah/react-app
 
-# jobs:
-#     integration:
-#         uses: ./.github/workflows/integrate.yml
-#         permissions:
-#             contents: read
-#     delivery:
-#         needs: [integration]
-#         uses: ./.github/workflows/deliver.yml
-#         permissions:
-#             contents: read
-#             packages: write
-#             id-token: write
 jobs:
-  integration:
-    runs-on: ubuntu-latest
-    steps:
-      # Run Continuous Integration workflow
-      - name: Run Continuous Integration
-        uses: actions/checkout@v3
-      - name: Run Integration Workflow
+    integration:
         uses: ./.github/workflows/integrate.yml
-    permissions:
-      contents: read
-
-  delivery:
-    needs: [integration]
-    runs-on: ubuntu-latest
-    steps:
-      # Run Continuous Delivery workflow
-      - name: Run Continuous Delivery
-        uses: actions/checkout@v3
-      - name: Run Delivery Workflow
-        uses: ./.github/workflows/deliver.yaml
-    permissions:
-      contents: read
-      packages: write
-      id-token: write
+        permissions:
+            contents: read
+    delivery:
+        needs: [integration]
+        uses: ./.github/workflows/deliver.yml
+        permissions:
+            contents: read
+            packages: write
+            id-token: write
