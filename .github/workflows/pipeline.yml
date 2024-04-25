@@ -20,22 +20,15 @@ env:
   IMAGE_NAME: aounallah/react-app
 
 jobs:
-    Test:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Debug Environment Variables
-              run: |
-                echo "DOCKER_HUB_USERNAME: $DOCKER_HUB_USERNAME"
-                echo "DOCKER_HUB_PASSWORD: $DOCKER_HUB_PASSWORD"
-
-    # integration:
-    #     uses: ./.github/workflows/integrate.yml
-    #     permissions:
-    #         contents: read
-    # delivery:
-    #     needs: [integration]
-    #     uses: ./.github/workflows/deliver.yml
-    #     permissions:
-    #         contents: read
-    #         packages: write
-    #         id-token: write
+    integration:
+        uses: ./.github/workflows/integrate.yml
+        permissions:
+            contents: read
+    delivery:
+        needs: [integration]
+        uses: ./.github/workflows/deliver.yml
+        permissions:
+            contents: read
+            packages: write
+            id-token: write
+        secrets: inherit
