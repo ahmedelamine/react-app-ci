@@ -1,13 +1,13 @@
 name: React-app CD
 
-# on:
-#   workflow_call:
-#   workflow_dispatch:
-
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
+  workflow_dispatch:
+
+# on:
+#   push:
+#     branches:
+#       - main
 
 env:
   # Use Docker Hub for Docker registry
